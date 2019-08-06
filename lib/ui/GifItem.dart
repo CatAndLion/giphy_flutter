@@ -55,7 +55,8 @@ class _GifItemState extends State<GifItem> {
 
               child: Align(
                 alignment: Alignment.topRight,
-                child: Icon(Icons.star, color: bloc.isFavourite(widget.item.id) ? Colors.yellow : Colors.white, size: 40,),
+                child: Icon(bloc.isFavourite(widget.item.id) ? Icons.star : Icons.star_border,
+                  color: bloc.isFavourite(widget.item.id) ? Colors.yellow : Colors.white, size: 40,),
               )
             ),
           ),

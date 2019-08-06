@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:giphy_flutter/bloc/BaseListBloc.dart';
 import 'package:giphy_flutter/bloc/ListEvent.dart';
 import 'package:giphy_flutter/bloc/ListState.dart';
@@ -11,7 +12,6 @@ enum DBResponseType {
   List, Added, Removed
 }
 
-///
 class GifListBloc extends BaseListBloc<GifObject> {
 
   final IDataLoader provider;
@@ -20,6 +20,8 @@ class GifListBloc extends BaseListBloc<GifObject> {
 
   final _idsController = PublishSubject<Pair<DBResponseType, List<String>>>();
   final _itemController = PublishSubject<Pair<DBResponseType, String>>();
+
+  Stream<dynamic> get countStream => StreamGroup.merge([idsStream, itemStream]).map((_) => ids.length);
 
   Stream<Pair<DBResponseType, List<String>>> get idsStream => _idsController.doOnData((data) {
     switch(data.left) {
@@ -34,7 +36,9 @@ class GifListBloc extends BaseListBloc<GifObject> {
   Stream<Pair<DBResponseType, String>> get itemStream => _itemController.doOnData((data) {
     switch(data.left) {
       case DBResponseType.Added:
-        ids.add(data.right);
+        if(!ids.contains(data.right)) {
+          ids.add(data.right);
+        }
         break;
       case DBResponseType.Removed:
         ids.remove(data.right);
@@ -65,22 +69,22 @@ class GifListBloc extends BaseListBloc<GifObject> {
     final id = gif.id;
     _itemController.sink.addStream(DBHelper.get().then((db) => db.addToFavourites(gif)).asStream()
         .map((res) {
-      return Pair(DBResponseType.Added, id);
-    }));
+          return Pair(DBResponseType.Added, id);
+        }));
   }
 
   void removeFromFavourites(final String id) {
     _itemController.sink.addStream(DBHelper.get().then((db) => db.removeFromFavourites(id)).asStream()
         .map((res) {
-      return Pair(DBResponseType.Removed, id);
-    }));
+          return Pair(DBResponseType.Removed, id);
+        }));
   }
 
   void updateIds() {
     _idsController.sink.addStream(DBHelper.get().then((db) => db.getAllFavouriteGifsIds()).asStream()
         .map((list) {
-      return Pair(DBResponseType.List, list);
-    }));
+          return Pair(DBResponseType.List, list);
+        }));
   }
 
   @override

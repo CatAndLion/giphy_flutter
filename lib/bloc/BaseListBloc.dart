@@ -63,7 +63,7 @@ abstract class BaseListBloc<D> extends Bloc<ListEvent, ListState<D>> {
         .transform(DebounceStreamTransformer((event) {
           //pause if event with search query
           bool searchEvent = event.query != currentState.query;
-          return TimerStream(event, Duration(milliseconds: searchEvent ? 1000 : 0));
+          return TimerStream(event, Duration(milliseconds: searchEvent ? 2000 : 0));
         }))
         .where((event) {
           //filter events

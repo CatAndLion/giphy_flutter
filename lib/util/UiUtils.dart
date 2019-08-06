@@ -13,7 +13,7 @@ class UiUtils {
   static const TextStyle textStyle = TextStyle(fontSize: textSize, fontFamily: 'Helvetica', color: Colors.white);
   static const TextStyle searchTextStyle = TextStyle(fontSize: textSizeLarge, fontFamily: 'Helvetica', color: Colors.black);
 
-  static const double textSize = 14;
+  static const double textSize = 16;
   static const double textSizeLarge = 18;
 
   static const String titleLogoPath = 'images/giphy_logo.png';

@@ -24,33 +24,17 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    //WidgetsBinding.instance.addObserver(this);
     _controller.addListener(onSearch);
 
     bloc = GifListBloc(ApiLoader());
-
-    bloc.addErrorListener((error) {
-      if(error != null) {
-        showDialog(context: context, builder: (context) {
-          return AlertDialog(
-            title: Text(error.left.toString()),
-            content: Text(error.right),
-          );
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    //WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -61,8 +45,20 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
           centerTitle: true,
           title: Image.asset(UiUtils.titleLogoPath),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.star, color: Colors.white,),
-              onPressed: navigateToFavouritesPage,
+            StreamBuilder(
+              stream: bloc.countStream,
+              builder: (context, snapshot) {
+                int count = snapshot.hasData ? snapshot.data : bloc.ids?.length ?? 0;
+                return Row(
+                  children: <Widget>[
+                    Text(count.toString(), style: UiUtils.textStyle),
+                    IconButton(icon: Icon(Icons.star, color: Colors.white,),
+                      iconSize: 35,
+                      onPressed: navigateToFavouritesPage,
+                    )
+                  ],
+                );
+              }
             )
           ],
         ),

@@ -49,6 +49,7 @@ dev_dependencies:
 
 flutter_icons:
   image_path: "images/giphy_icon.png"
+  ios: true
   android: false
 
 # For information on the generic Dart part of this file, see the
